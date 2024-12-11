@@ -56,7 +56,7 @@ func NewOpenIDConfig() (*OpenIDConfig, error) {
 	if funk.IsEmpty(issuerURI) {
 		return nil, fmt.Errorf("issuer URI is not set")
 	}
-	config, confErr := fetchOpenIDConfiguration(issuerURI + DiscoveryPath)
+	config, confErr := fetchOpenIDConfiguration(fmt.Sprintf("%s/%s", issuerURI, DiscoveryPath))
 	if confErr != nil {
 		return nil, confErr
 	}
@@ -76,7 +76,7 @@ func NewOpenIDConfig() (*OpenIDConfig, error) {
 }
 
 func NewOpenIDConfigFromKey(issuerURI string, key []byte) (*OpenIDConfig, error) {
-	config, confErr := fetchOpenIDConfiguration(issuerURI + DiscoveryPath)
+	config, confErr := fetchOpenIDConfiguration(fmt.Sprintf("%s/%s", issuerURI, DiscoveryPath))
 	if confErr != nil {
 		return nil, confErr
 	}
