@@ -1,4 +1,4 @@
-package client
+package openid_client
 
 import (
 	"bytes"
@@ -7,8 +7,6 @@ import (
 	"fmt"
 	"github.com/golang-jwt/jwt/v5"
 	json "github.com/json-iterator/go"
-	"github.com/qameta/openid-client/config"
-	"github.com/qameta/openid-client/models"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"net/url"
@@ -17,16 +15,16 @@ import (
 
 type Client[T any] struct {
 	headers http.Header
-	conf    *config.OpenIDConfig
+	conf    *OpenIDConfig
 }
 
-func NewClient[T any](conf *config.OpenIDConfig) *Client[T] {
+func NewClient[T any](conf *OpenIDConfig) *Client[T] {
 	var client = Client[T]{
 		headers: http.Header{},
 		conf:    conf,
 	}
 
-	var jsonKey models.JsonKey
+	var jsonKey JsonKey
 	unmarshalErr := json.Unmarshal(conf.Key, &jsonKey)
 	if unmarshalErr != nil {
 		log.Fatalf("failed unmarshalling key: %v", unmarshalErr)
@@ -64,7 +62,7 @@ func NewClient[T any](conf *config.OpenIDConfig) *Client[T] {
 
 	var form = url.Values{}
 
-	form.Set("grant_type", config.DefaultGrant)
+	form.Set("grant_type", DefaultGrant)
 	form.Set("assertion", signedToken)
 	form.Set("scope", "openid")
 
@@ -73,7 +71,7 @@ func NewClient[T any](conf *config.OpenIDConfig) *Client[T] {
 		log.Fatalf("failed to exchange token: %v", respErr)
 	}
 
-	var authResponse models.AccessTokenResponse
+	var authResponse AccessTokenResponse
 	parseTokenErr := json.NewDecoder(response.Body).Decode(&authResponse)
 	if parseTokenErr != nil {
 		log.Fatalf("failed to parse token: %v", parseTokenErr)

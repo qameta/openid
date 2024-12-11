@@ -1,4 +1,4 @@
-package models
+package openid_client
 
 type JsonKey struct {
 	Type           string `json:"type"`

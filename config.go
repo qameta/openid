@@ -1,4 +1,4 @@
-package config
+package openid_client
 
 import (
 	"fmt"
