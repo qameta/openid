@@ -47,9 +47,9 @@ func NewClient[T any](conf *config.OpenIDConfig) *Client[T] {
 		Method: jwt.SigningMethodRS256,
 	}
 
-	var keyPEMBlock, pemErr = pem.Decode([]byte(jsonKey.Key))
-	if pemErr != nil {
-		log.Fatalf("failed decoding PEM block: %v", pemErr)
+	var keyPEMBlock, _ = pem.Decode([]byte(jsonKey.Key))
+	if keyPEMBlock == nil {
+		log.Fatalf("failed decoding PEM block: %v", keyPEMBlock)
 	}
 
 	var privateKey, keyErr = x509.ParsePKCS1PrivateKey(keyPEMBlock.Bytes)
