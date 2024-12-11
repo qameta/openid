@@ -1,4 +1,4 @@
-package openid_client
+package client
 
 import (
 	"fmt"
