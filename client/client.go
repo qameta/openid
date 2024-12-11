@@ -13,13 +13,13 @@ import (
 	"time"
 )
 
-type Client[T any] struct {
+type Client[R, T any] struct {
 	headers http.Header
 	conf    *OpenIDConfig
 }
 
-func NewClient[T any](conf *OpenIDConfig) *Client[T] {
-	var client = Client[T]{
+func NewClient[R, T any](conf *OpenIDConfig) *Client[R, T] {
+	var client = Client[R, T]{
 		headers: http.Header{},
 		conf:    conf,
 	}
@@ -83,7 +83,7 @@ func NewClient[T any](conf *OpenIDConfig) *Client[T] {
 	return &client
 }
 
-func (c *Client[T]) Get(url string) (*T, error) {
+func (c *Client[R, T]) Get(url string) (*T, error) {
 	var request, reqErr = http.NewRequest(http.MethodGet, url, nil)
 	if reqErr != nil {
 		return nil, fmt.Errorf("failed to create request: %v", reqErr)
@@ -105,7 +105,7 @@ func (c *Client[T]) Get(url string) (*T, error) {
 	return &result, nil
 }
 
-func (c *Client[T]) Post(url string, body T) (*T, error) {
+func (c *Client[R, T]) Post(url string, body R) (*T, error) {
 	var serializedBody, serErr = json.Marshal(body)
 	if serErr != nil {
 		return nil, serErr
@@ -133,7 +133,7 @@ func (c *Client[T]) Post(url string, body T) (*T, error) {
 	return &result, nil
 }
 
-func (c *Client[T]) Put(url string, body T) (*T, error) {
+func (c *Client[R, T]) Put(url string, body R) (*T, error) {
 	var serializedBody, serErr = json.Marshal(body)
 	if serErr != nil {
 		return nil, serErr
@@ -161,7 +161,7 @@ func (c *Client[T]) Put(url string, body T) (*T, error) {
 	return &result, nil
 }
 
-func (c *Client[T]) Delete(url string) error {
+func (c *Client[R, T]) Delete(url string) error {
 	var request, reqErr = http.NewRequest(http.MethodDelete, url, nil)
 	if reqErr != nil {
 		return fmt.Errorf("failed to create request: %v", reqErr)
