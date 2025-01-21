@@ -48,6 +48,7 @@ func NewClient[R, T any](conf *OpenIDConfig) *Client[R, T] {
 	var keyPEMBlock, _ = pem.Decode([]byte(jsonKey.Key))
 	if keyPEMBlock == nil {
 		log.Fatalf("failed decoding PEM block: %v", keyPEMBlock)
+		return nil
 	}
 
 	var privateKey, keyErr = x509.ParsePKCS1PrivateKey(keyPEMBlock.Bytes)
@@ -77,7 +78,7 @@ func NewClient[R, T any](conf *OpenIDConfig) *Client[R, T] {
 		log.Fatalf("failed to parse token: %v", parseTokenErr)
 	}
 
-	client.headers.Add("Authorization", fmt.Sprintf("%s %s", authResponse.TokenType, authResponse.AccessToken))
+	client.headers.Add("Authorization", fmt.Sprintf("Bearer %s", authResponse.AccessToken))
 	client.headers.Add("Content-Type", "application/json")
 
 	return &client
